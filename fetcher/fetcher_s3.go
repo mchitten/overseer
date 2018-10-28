@@ -19,11 +19,12 @@ import (
 //object. If it detects this file has been updated, it will perform
 //an object GET and return its io.Reader stream.
 type S3 struct {
-	Access string
-	Secret string
-	Region string
-	Bucket string
-	Key    string
+	Endpoint string
+	Access   string
+	Secret   string
+	Region   string
+	Bucket   string
+	Key      string
 	//interal state
 	Interval time.Duration
 	client   *s3.S3
@@ -50,6 +51,9 @@ func (s *S3) Init() error {
 	config := &aws.Config{
 		Credentials: creds,
 		Region:      &s.Region,
+	}
+	if s.Endpoint != "" {
+		config.Endpoint = &s.Endpoint
 	}
 	s.client = s3.New(session.New(config))
 	//apply defaults
